@@ -1,7 +1,0 @@
-<div class="staff-nav shell">
-  <div>
-    <a href="{% url 'staff_dashboard' %}">Dashboard</a>
-    <a href="{% url 'staff_applications' %}">Applications</a>
-  </div>
-  <form method="post" action="{% url 'staff_logout' %}">{% csrf_token %}<button class="link-button" type="submit">Sign out</button></form>
-</div>
