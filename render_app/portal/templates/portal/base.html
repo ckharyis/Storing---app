@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Secure loan application and agreement portal.">
+  <title>{% block title %}{{ brand_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'portal/app.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% if demo_mode %}
+    <div class="demo-banner" role="status">Demonstration mode — use fictional information only. No real loan is offered.</div>
+  {% endif %}
+  <header class="site-header">
+    <a class="brand" href="{% url 'home' %}" aria-label="{{ brand_name }} home">
+      <span class="brand-mark" aria-hidden="true">L</span>
+      <span>{{ brand_name }}</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="{% url 'home' %}#process">How it works</a>
+      <a href="{% url 'terms' %}">Terms</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+      {% if request.user.is_authenticated and request.user.is_staff %}
+        <a href="{% url 'staff_dashboard' %}">Staff</a>
+      {% else %}
+        <a href="{% url 'staff_login' %}">Staff login</a>
+      {% endif %}
+      <a class="nav-cta" href="{% url 'apply' %}">Start request</a>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <div class="messages" aria-live="polite">
+      {% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}
+    </div>
+  {% endif %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer>
+    <div>
+      <strong>{{ brand_name }}</strong>
+      <p>Operated by {{ business_legal_name }}</p>
+      <p>{{ business_address }} · Registration: {{ business_registration_number }}</p>
+      <p>Authorization reference: {{ authorization_reference }}</p>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:{{ business_contact_email }}">{{ business_contact_email }}</a>
+      <a href="{% url 'terms' %}">Terms</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+    </div>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

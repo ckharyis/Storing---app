@@ -1,0 +1,25 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}Review and sign · {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="sign-shell shell narrow">
+  <div class="section-heading"><p class="eyebrow">Secure agreement · {{ session.contract.application.reference }}</p><h1>Review before signing</h1><p>Your agreement must be read in full. Verify every amount and due date before continuing.</p></div>
+  {% if not otp_verified %}
+    <div class="card verify-card"><h2>Verify your email</h2><p>Request a six-digit code, then enter it below. The code expires after ten minutes.</p><form method="post">{% csrf_token %}<input type="hidden" name="action" value="send_otp"><button class="button secondary full" type="submit">Send verification code</button></form><form method="post" class="otp-row">{% csrf_token %}<input type="hidden" name="action" value="verify_otp">{{ otp_form.code }}<button class="button primary" type="submit">Verify</button></form></div>
+  {% else %}
+    <div class="summary-card card">
+      <div><span>Principal</span><strong>XCG {{ session.contract.principal }}</strong></div><div><span>Interest</span><strong>XCG {{ session.contract.interest_amount }}</strong></div><div><span>Total repayment</span><strong>XCG {{ session.contract.total_repayment }}</strong></div><div><span>APR shown</span><strong>{{ session.contract.apr_percent }}%</strong></div>
+    </div>
+    <a class="button secondary full" href="{% url 'signer_contract_pdf' token %}" target="_blank" rel="noopener">Open complete agreement PDF</a>
+    <form method="post" class="card form-card signature-form" id="signature-form">{% csrf_token %}<input type="hidden" name="action" value="sign">
+      <div class="verified-callout">Email verified. Your signing session remains valid for 15 minutes.</div>
+      <div class="field"><label for="{{ form.typed_name.id_for_label }}">{{ form.typed_name.label }}</label>{{ form.typed_name }}{% for error in form.typed_name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      <div class="field"><label>Draw your signature</label><canvas id="signature-pad" width="900" height="300" aria-label="Signature drawing area"></canvas><div class="signature-controls"><button type="button" class="link-button" id="clear-signature">Clear signature</button></div>{{ form.signature_data }}{% for error in form.signature_data.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      <div class="field checkbox-field"><label>{{ form.accept_contract }} <span>{{ form.accept_contract.label }}</span></label>{% for error in form.accept_contract.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      <div class="field checkbox-field"><label>{{ form.confirm_copy }} <span>{{ form.confirm_copy.label }}</span></label>{% for error in form.confirm_copy.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>
+      <button class="button primary full" type="submit">Sign agreement</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}{% if otp_verified %}<script src="{% static 'portal/signature.js' %}" defer></script>{% endif %}{% endblock %}

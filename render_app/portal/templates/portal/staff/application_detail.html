@@ -1,0 +1,26 @@
+{% extends "portal/base.html" %}
+{% block title %}{{ application.reference }} · {{ brand_name }}{% endblock %}
+{% block content %}
+{% include "portal/staff/_nav.html" %}
+<section class="staff-page shell">
+  <div class="page-heading"><div><a class="back-link" href="{% url 'staff_applications' %}">← Applications</a><p class="eyebrow">{{ application.reference }}</p><h1>{{ application.full_name }}</h1></div><span class="status status-{{ application.status }}">{{ application.get_status_display }}</span></div>
+  <div class="detail-grid">
+    <div class="card details-card">
+      <h2>Request details</h2>
+      <dl><div><dt>Email</dt><dd>{{ application.email }}</dd></div><div><dt>Requested amount</dt><dd>XCG {{ application.requested_amount }}</dd></div><div><dt>Submitted</dt><dd>{{ application.created_at|date:"d M Y H:i T" }}</dd></div><div><dt>Terms version</dt><dd>{{ application.terms_version }}</dd></div><div><dt>Privacy version</dt><dd>{{ application.privacy_version }}</dd></div><div><dt>Retention review</dt><dd>{{ application.retention_until|date:"d M Y" }}</dd></div></dl>
+      {% if application.applicant_note %}<h3>Applicant note</h3><p class="note-text">{{ application.applicant_note }}</p>{% endif %}
+    </div>
+    <div class="card action-card">
+      <h2>Review decision</h2>
+      <form method="post">{% csrf_token %}<label for="status">Change status</label><select id="status" name="status"><option value="review">Under review</option><option value="more_info">More information required</option><option value="approved">Approved</option><option value="declined">Declined</option><option value="closed">Closed</option></select><button class="button secondary full" type="submit">Update status</button></form>
+      {% if application.status == 'approved' and request.user.staff_profile.role == 'owner' %}<a class="button primary full" href="{% url 'staff_contract_create' application.id %}">Create agreement</a>{% endif %}
+    </div>
+  </div>
+  <div class="card table-card">
+    <div class="card-heading"><h2>Contracts</h2></div>
+    <div class="table-scroll"><table><thead><tr><th>Created</th><th>Total</th><th>APR</th><th>Status</th><th>Documents</th><th>Action</th></tr></thead><tbody>
+      {% for contract in contracts %}<tr><td>{{ contract.created_at|date:"d M Y H:i" }}</td><td>XCG {{ contract.total_repayment }}</td><td>{{ contract.apr_percent }}%</td><td><span class="status status-{{ contract.status }}">{{ contract.get_status_display }}</span></td><td><a href="{% url 'staff_contract_pdf' contract.id %}">Draft PDF</a>{% if contract.final_pdf %} · <a href="{% url 'staff_contract_final_pdf' contract.id %}">Signed PDF</a>{% endif %}</td><td>{% if contract.status == 'draft' and request.user.staff_profile.role == 'owner' %}<form method="post" action="{% url 'staff_contract_send' contract.id %}">{% csrf_token %}<button class="button small primary" type="submit">Send securely</button></form>{% else %}—{% endif %}</td></tr>{% empty %}<tr><td colspan="6" class="empty">No contracts created.</td></tr>{% endfor %}
+    </tbody></table></div>
+  </div>
+</section>
+{% endblock %}
