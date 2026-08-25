@@ -1,0 +1,20 @@
+{% extends "portal/base.html" %}
+{% block title %}Privacy · {{ brand_name }}{% endblock %}
+{% block content %}
+<article class="legal shell narrow">
+  <p class="eyebrow">Privacy notice · Version {{ privacy_version }}</p>
+  <h1>How application information is handled</h1>
+  <p>We collect only the information needed to receive, review and document a loan request. The responsible legal entity is {{ business_legal_name }}, reachable at {{ business_contact_email }}.</p>
+  <h2>Information used in this version</h2>
+  <p>Legal name, email address, requested amount, optional application note, consent records and security audit information.</p>
+  <h2>Purpose</h2>
+  <p>To review the request, communicate a decision, prepare an agreement, verify electronic signing and preserve evidence of the transaction.</p>
+  <h2>Access and sharing</h2>
+  <p>Access is restricted to authorized staff and contracted service providers needed for hosting, private document storage and transactional email. Information is not sold.</p>
+  <h2>Retention and your rights</h2>
+  <p>Records are retained only for the configured legal and operational period. You may request access, correction or deletion where the law permits by contacting {{ business_contact_email }}.</p>
+  <h2>Security</h2>
+  <p>The portal uses encrypted transport, access controls, multi-factor authentication, private document storage and audit logging. No internet system can guarantee absolute security.</p>
+  {% if demo_mode %}<div class="legal-warning">This is placeholder wording for a demonstration and requires legal approval before production use.</div>{% endif %}
+</article>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "portal/base.html" %}
+{% block title %}Recovery codes · {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="auth-shell shell narrow">
+  <div class="section-heading"><p class="eyebrow">Save once</p><h1>Your recovery codes</h1><p>Store these offline. Each code works once and they will not be shown again.</p></div>
+  <div class="card recovery-grid">{% for code in codes %}<code>{{ code }}</code>{% endfor %}</div>
+  <a class="button primary full" href="{% url 'staff_dashboard' %}">I saved them securely</a>
+</section>
+{% endblock %}

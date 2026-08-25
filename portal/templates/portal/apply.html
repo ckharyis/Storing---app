@@ -1,0 +1,31 @@
+{% extends "portal/base.html" %}
+{% block title %}Start a request · {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="form-shell shell narrow">
+  <div class="section-heading">
+    <p class="eyebrow">Loan request</p>
+    <h1>Tell us the basics</h1>
+    <p>This first step is a request for review. It is not an approval or agreement.</p>
+  </div>
+  <form method="post" class="card form-card" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+      <div class="field{% if field.field.widget.input_type == 'checkbox' %} checkbox-field{% endif %}">
+        {% if field.field.widget.input_type == 'checkbox' %}
+          <label>{{ field }} <span>{{ field.label }}</span></label>
+        {% else %}
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+        {% endif %}
+        {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+        {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+    {% endfor %}
+    {% if turnstile_site_key and not demo_mode %}<div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>{% endif %}
+    <button class="button primary full" type="submit">Submit request</button>
+    <p class="microcopy">Do not include an ID number, salary slip or bank information in the note field.</p>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}{% if turnstile_site_key and not demo_mode %}<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>{% endif %}{% endblock %}
