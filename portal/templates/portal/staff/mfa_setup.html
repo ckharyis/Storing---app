@@ -1,0 +1,12 @@
+{% extends "portal/base.html" %}
+{% block title %}Set up MFA · {{ brand_name }}{% endblock %}
+{% block content %}
+<section class="auth-shell shell narrow">
+  <div class="section-heading"><p class="eyebrow">Required security step</p><h1>Set up your authenticator</h1><p>Scan this QR code with an authenticator app, then enter the current six-digit code.</p></div>
+  <div class="card mfa-card">
+    <img class="qr" src="data:image/png;base64,{{ qr_data }}" alt="Authenticator QR code">
+    <p class="secret-key"><span>Manual setup key</span><code>{{ secret }}</code></p>
+    <form method="post" class="form-card compact">{% csrf_token %}{{ form.code.label_tag }}{{ form.code }}{% for error in form.code.errors %}<p class="field-error">{{ error }}</p>{% endfor %}<button class="button primary full" type="submit">Verify and activate</button></form>
+  </div>
+</section>
+{% endblock %}
