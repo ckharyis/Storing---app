@@ -1,8 +1,0 @@
-{% extends "portal/base.html" %}
-{% block title %}Verify MFA · {{ brand_name }}{% endblock %}
-{% block content %}
-<section class="auth-shell shell narrow">
-  <div class="section-heading"><p class="eyebrow">Second factor</p><h1>Enter your security code</h1><p>Use your authenticator app or one unused recovery code.</p></div>
-  <form method="post" class="card form-card">{% csrf_token %}{{ form.code.label_tag }}{{ form.code }}{% for error in form.code.errors %}<p class="field-error">{{ error }}</p>{% endfor %}<button class="button primary full" type="submit">Verify</button></form>
-</section>
-{% endblock %}
